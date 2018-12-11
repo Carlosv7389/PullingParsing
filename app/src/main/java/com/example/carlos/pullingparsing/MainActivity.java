@@ -44,20 +44,34 @@ public class MainActivity extends AppCompatActivity {
     private void jsonParse() {
         /**Test URL from n2yo that should give an "info" object using a users key
          * n2yo test: https://www.n2yo.com/rest/v1/satellite/tle/25544&apiKey=7K5RG7-EPM5SQ-LEYHBJ-3X9X
-         * general test: https://api.myjson.com/bins/19x8xi*/
-        String url = "https://www.n2yo.com/rest/v1/satellite/tle/25544&apiKey=7K5RG7-EPM5SQ-LEYHBJ-3X9X";
+         * https://www.n2yo.com/rest/v1/satellite/above/41.702/-76.014/0/70/18/&apiKey=7K5RG7-EPM5SQ-LEYHBJ-3X9X
+         * **GENERAL FORMAT**
+         * "https://www.n2yo.com/rest/v1/satellite/above/" + Observer Latitude + "/" + Observer Longitude + "/" + altitude + "/" + category_ID(18 seems good) + "/" + search radius(90) + "/&apiKey=7K5RG7-EPM5SQ-LEYHBJ-3X9X"
+         * */
+        String url = "https://www.n2yo.com/rest/v1/satellite/above/41.702/-76.014/0/70/18/&apiKey=7K5RG7-EPM5SQ-LEYHBJ-3X9X";
+
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-
                             JSONObject jsonObject = response.getJSONObject("info");
+                            /**
+                             * DONT KNOW WHERE TO IMPLEMENT satCount BUT ITS THE NUMBER OF satellites DETECTED
+                             */
+                            int satCount = jsonObject.getInt("satcount");
 
-                            int satID = jsonObject.getInt("satid");
-                            String satName = jsonObject.getString("satname");
-                            mTextViewResult.append(String.valueOf(satID) + ", " + satName + "\n\n");
+                            JSONArray jsonArray = response.getJSONArray("above");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject satellite = jsonArray.getJSONObject(i);
+                                int satID = satellite.getInt("satid");
+                                String satName = satellite.getString("satname");
+                                int satLatitude = satellite.getInt("satlat");
+                                int satLongitude = satellite.getInt("satlng");
+                                int satAltitude = satellite.getInt("satalt");
+                                mTextViewResult.append(satName + " ID:" + String.valueOf(satID) + " Latitude:" + String.valueOf(satLatitude) + " Longitude:" + String.valueOf(satLongitude) + " Altitude:" + String.valueOf(satAltitude));
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
