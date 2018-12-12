@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
                              * DONT KNOW WHERE TO IMPLEMENT satCount BUT ITS THE NUMBER OF satellites DETECTED
                              */
                             int satCount = jsonObject.getInt("satcount");
-
                             JSONArray jsonArray = response.getJSONArray("above");
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject satellite = jsonArray.getJSONObject(i);
